@@ -1,10 +1,10 @@
 import telebot
 from datetime import datetime
 import psycopg2
+import os
 
 # Telegram bot token
-# API_TOKEN = os.getenv('TELEBOT_API_TOKEN')
-API_TOKEN = '6815815949:AAGyoSzN104foY5ZTCRNAS7Brt1L7BpyOhg'
+API_TOKEN = os.getenv('TELEBOT_API_TOKEN')
 bot = telebot.TeleBot(API_TOKEN)
 
 """ Commands to paste in BotFather:
@@ -19,82 +19,15 @@ bot = telebot.TeleBot(API_TOKEN)
 
 """
 
+
 conn = psycopg2.connect(
-    user="super",
-    password="dopamine",
-    host="gasparddjivan-3645.postgres.pythonanywhere-services.com",
+    user= os.getenv('DB_USER'),
+    password= os.getenv('DB_PASSWORD'),
+    host= os.getenv('DB_HOST'),
     port="13645",
     database="postgres")
 
-# def create_connection(db_url):
-#     # Parse database URL
-#     result = urlparse(db_url)
-#     username = result.username
-#     password = result.password
-#     database = result.path[1:]  # Exclude the leading '/'
-#     hostname = result.hostname
-#     port = result.port
-
-#     # Connect to the database
-#     conn = psycopg2.connect(
-#         database=database,
-#         user=username,
-#         password=password,
-#         host=hostname,
-#         port=port
-#     )
-#     print("Connection to PostgreSQL DB successful")
-#     return conn
-
-
-# Database URL
-# db_url = os.getenv('DB_URL')
-
-# Connect to the database
-# conn = create_connection(db_url)
-
-# Remember to close the connection when done
-# connection.close()
-
-
-
-
-# Connect to your postgres DB
-# DB_NAME = os.getenv('DB_NAME')
-# DB_USER = os.getenv('DB_USER')
-# DB_PASSWORD = os.getenv('DB_PASSWORD')
-
-# conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD)
 cursor = conn.cursor()
-
-""" 2 actions boolean logs
-def process_habit(habit_type, message):
-    chat_id = message.chat.id
-    try:
-        if message.text == 'Yes':
-            bot.send_message(chat_id, f'Good job on your {habit_type}!')
-            cursor.execute(f"INSERT INTO Habits (habit_type, boolean_value) VALUES ('{habit_type}', TRUE);")
-            conn.commit()
-        elif message.text == 'No':
-            bot.send_message(chat_id, f'You should keep up with your {habit_type}.')
-            cursor.execute(f"INSERT INTO Habits (habit_type, boolean_value) VALUES ('{habit_type}', FALSE);")
-            conn.commit()
-    except ValueError:
-        bot.reply_to(message, 'Please enter a valid answer.')
-
-def process_meditate(message):
-    process_habit('Meditation', message)
-
-def process_fluoxetine(message):
-    process_habit('Fluoxetine', message)
-
-def process_journal(message):
-    process_habit('Journal', message)
-
-def process_na_meeting(message):
-    process_habit('NA Meeting', message)
- """
-
 
 # Handle slash commands
 
@@ -121,23 +54,6 @@ log_habit('meditate', 'Meditation')
 log_habit('fluoxetine', 'Fluoxetine')
 log_habit('journal', 'Journal')
 log_habit('na_meeting', 'NA Meeting')
-
-""" 2 actions boolean logs
-def ask_habit(command, question, next_step_handler):
-    @bot.message_handler(commands=[command])
-    def ask(message):
-        markup = types.ReplyKeyboardMarkup(row_width=2)
-        itembtn1 = types.KeyboardButton('Yes')
-        itembtn2 = types.KeyboardButton('No')
-        markup.add(itembtn1, itembtn2)
-        msg = bot.reply_to(message, question, reply_markup=markup)
-        bot.register_next_step_handler(msg, next_step_handler)
-
-ask_habit('meditate', "Did you meditate?", process_meditate)
-ask_habit('fluoxetine', "Did you take your fluoxetine?", process_fluoxetine)
-ask_habit('journal', "Did you journal?", process_journal)
-ask_habit('na_meeting', "Did you attend an NA meeting?", process_na_meeting)
- """
 
 # Handle library arrival and departure
 
